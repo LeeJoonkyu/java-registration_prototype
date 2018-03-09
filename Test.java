@@ -22,21 +22,23 @@ class LastYear{
 class ThisYear{
 	String code;
 	String subject;
-	String time;
+	String time1;
+	String time2;
 	String professor;
 	String pre_code;
 
 	ThisYear(){}
-	ThisYear(String code,String subject,String time,String professor, String pre_code){
+	ThisYear(String code,String subject,String time1, String time2,String professor, String pre_code){
 		this.code=code;
 		this.subject=subject;
-		this.time=time;
+		this.time1=time1;
+		this.time2=time2;
 		this.professor=professor;
 		this.pre_code=pre_code;
 
 	}
 	void print() {
-		System.out.println(code+" "+subject+" "+time+" "+professor+" "+pre_code);
+		System.out.println(code+" "+subject+" "+time1+" "+time2+" "+professor+" "+pre_code);
 	}
 
 }
@@ -71,10 +73,11 @@ public class Test {
 				while(scin.hasNext()) {
 					String code=scin.next();
 					String subject=scin.next();
-					String time=scin.next(); //나중에는 time1 time2로 해서 중복제거해야함.
+					String time1=scin.next(); //나중에는 time1 time2로 해서 중복제거해야함.
+					String time2=scin.next();
 					String professor=scin.next();
 					String pre_code=scin.next(); //선수과목이 없는경우 파일내에서 NULL코드 지정안하면 NoSuchElementException 발생.
-					TY.add(new ThisYear(code,subject,time,professor,pre_code));
+					TY.add(new ThisYear(code,subject,time1,time2,professor,pre_code));
 				}
 				scin.close();
 			}
@@ -89,33 +92,43 @@ public class Test {
 		}
 		//파일읽기는 이제 종료.
 
-		Scanner scin2 = new Scanner(System.in);
-		System.out.println("수강 과목 코드를 입력하세요 : ");
-		//제네릭스 어래이배열 써보기. 동적이니까 만약 3과목 아래면 에러, 8과목 위여도 에러. 하계상계가 있는 배열?
 
 		LinkedList<ThisYear> SubjectList = new LinkedList<ThisYear>();
-		boolean pass = true;
 
 		//선수과목 체크
 		//완료 후 강의시간 체크.
-		for (int i=0;i<7;++i) {
-			String Subject = scin2.next();
-			SubjectList.add(new ThisYear(Subject,"0","0","0","0"));
-			//이렇게 할 경우 추가로 과목을 선택하지 않을때는 x 라던가 0이라던가 널값을 입력해줘야함.
-		}
+		boolean chk = false;
 
-		for(int i=0;i<7;++i) {//신청과목
-			for(int j=0;j<11;++j) {//지난해과목들
-				ListIterator<LastYear> iter = LY.listIterator();
-				if (SubjectList.get(i).pre_code=="#NULL") continue;
-				else if (SubjectList.get(i).pre_code==LY.) //신청과목에서 선수과목이, 이전해과목에 있는경우와 없는경우. 있으면 컨티뉴 없으면 페일.
+		while(chk == false) {
+			//리턴포인트. 밑에서 검증을 한다음 chk가 true면 다시 수강신청하지 않겟지만 false그대로라면, 다시 수강신청해야함.
+			Scanner scin2 = new Scanner(System.in);
+			System.out.println("수강 과목 코드를 입력하세요 : ");
+			for (int i=0;i<7;++i) {
+				String Subject = scin2.next();
+				SubjectList.add(new ThisYear(Subject,"0","0","0","0","0"));
+				//이렇게 할 경우 추가로 과목을 선택하지 않을때는 x 라던가 0이라던가 널값을 입력해줘야함.
+			}
+			ListIterator<ThisYear> iter = SubjectList.listIterator();
+			while (iter.hasNext()) {
+				ListIterator<LastYear> iter2 = LY.listIterator(); //LY는 매번 처음부터 돌아야하므로 이터레이터를 다시얻어와야함.
+				chk=false;
 
+				if(iter.next().pre_code=="#NULL") continue; //신청과목 선수과목이 없으면, LY계속 뒤짐.
+				else {//신청과목에 선수과목이 있는 경우.
+					while(iter2.hasNext()) {//LY에 있는지 없는지 찾아내야함.
+						if(iter.next(). == iter2.next().code) {
+							chk=true; //있다면 체크 변수가 true. 발견! 나가도됨.
+							break;
+						}
+						else chk=false;//없다면 체크 변수가 false.
+					}
 				}
+				if (chk==false) { //chk가 t->f로 바뀌었다면. 선수과목을 듣지 못한것.
+					System.out.println("수강신청에 실패했습니다. 다시 신청해주세요");
+					break;
+				}
+
 			}
 		}
-
-
-
-		for (String x : SubjectArr) System.out.println(x);
 	}
 }
