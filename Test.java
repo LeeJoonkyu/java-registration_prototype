@@ -87,7 +87,7 @@ public class Test {
 			System.out.println("orgin12.txt not exist!!");
 		}
 		System.out.println("List of subjects : ");
-		for (ThisYear x : TY) { //TY객체 사이즈를 100으로 했더니 NULLPOINTEREXCEPTION, 19로 줄여줫더니 해결.
+		for (ThisYear x : TY) {
 			x.print();
 		}
 		//파일읽기는 이제 종료.
@@ -97,38 +97,89 @@ public class Test {
 
 		//선수과목 체크
 		//완료 후 강의시간 체크.
-		boolean chk = false;
+		boolean chk = true;
 
-		while(chk == false) {
+		while(chk == true) {
 			//리턴포인트. 밑에서 검증을 한다음 chk가 true면 다시 수강신청하지 않겟지만 false그대로라면, 다시 수강신청해야함.
 			Scanner scin2 = new Scanner(System.in);
 			System.out.println("수강 과목 코드를 입력하세요 : ");
-			for (int i=0;i<7;++i) {
+			for (int i=0;i<8;++i) {
 				String Subject = scin2.next();
-				SubjectList.add(new ThisYear(Subject,"0","0","0","0","0"));
-				//이렇게 할 경우 추가로 과목을 선택하지 않을때는 x 라던가 0이라던가 널값을 입력해줘야함.
-			}
-			ListIterator<ThisYear> iter = SubjectList.listIterator();
-			while (iter.hasNext()) {
-				ListIterator<LastYear> iter2 = LY.listIterator(); //LY는 매번 처음부터 돌아야하므로 이터레이터를 다시얻어와야함.
-				chk=false;
-
-				if(iter.next().pre_code=="#NULL") continue; //신청과목 선수과목이 없으면, LY계속 뒤짐.
-				else {//신청과목에 선수과목이 있는 경우.
-					while(iter2.hasNext()) {//LY에 있는지 없는지 찾아내야함.
-						if(iter.next(). == iter2.next().code) {
-							chk=true; //있다면 체크 변수가 true. 발견! 나가도됨.
-							break;
-						}
-						else chk=false;//없다면 체크 변수가 false.
+				for(int j=0;j<TY.size();j++) {
+					if (Subject.equals(TY.get(j).code)) {
+						SubjectList.add(TY.get(j));
 					}
 				}
-				if (chk==false) { //chk가 t->f로 바뀌었다면. 선수과목을 듣지 못한것.
-					System.out.println("수강신청에 실패했습니다. 다시 신청해주세요");
-					break;
+				//이렇게 할 경우 추가로 과목을 선택하지 않을때는 x 라던가 0이라던가 널값을 입력해줘야함.
+			}
+
+			//TY와 SubjectList 관계 다시생각해보고, 시간표 겹치는 문제는 이 while문 밖에서 해결해야할건데, 어떻게할지생각.
+			//SubjectList 는 단순히 연결리스트인데, TY 객체를 담는 연결리스트이다.
+			//SubjectList에 들어간 ThisYear의 과목명을 TY클래스에서 확인해서, pre_code를 조회해야..
+			for(int i=0;i<SubjectList.size();i++) {
+				chk=true;
+				String code = SubjectList.get(i).code;
+				String chk_code="#NULL";
+				for(int j=0;j<TY.size();j++) {
+					if(code.equals(TY.get(j).code)) {
+						chk_code=TY.get(j).pre_code;
+						System.out.println(chk);
+					}
+				}
+				if(chk_code.equals("#NULL")) {
+
+					continue;//즉, 신청과목 리스트의 과목에 선수과목이 없다면, 다음 신청과목검증을한다.//SL과TY사이의 비교
+				}
+				else {//선수과목이 있다면, 이제 선수과목이 작년에 들엇는지를 검증한다.//SL과 LY사이의 비교
+					for(int j=0;j<LY.size();j++) {
+						if(chk_code.equals(LY.get(j).code)) {
+							chk=true;
+							break; //선수과목에 있네, 포문탈출.
+						}
+						else chk=false; //없으면 chk는 t->f로 변경.
+					}
+					if (chk==false) { //chk가 t->f로 바뀌었다면. 선수과목을 듣지 못한것.
+						System.out.println("수강신청에 실패했습니다. 다시 신청해주세요");
+						chk=true;//무한루프 끝내면 안됨.
+						break;//과목코드 다시 입력하러 가야함.
+					}
+					else if (chk==true) {
+						System.out.println("성공");
+						chk=false;//무한루프 끝내야함.
+						break;
+					}
+
 				}
 
+
+
+
 			}
+
+			if (chk==true) continue; //선수과목 조건에 걸렸다면 시간표 체크를 수행할 필요가 없음. 리턴포인트로돌아감.
+			else {//선수과목 조건을 통과했다면 이제 시간표검증을해야함. //6*5 배열을 만들어서 마킹하는 식으로 하든지, 무식하게 String 비교로하든지.
+				for(int i=0;i<SubjectList.size();i++) {
+					String t1 =	SubjectList.get(i).time1;
+					String t2 = SubjectList.get(i).time2;
+
+					for(int j=i+1;j<SubjectList.size();j++) {
+						if(t1.equals(SubjectList.get(j).time1)||t1.equals(SubjectList.get(j).time2)||t2.equals(SubjectList.get(j).time1)||t2.equals(SubjectList.get(j).time2)) {
+							chk=true;
+							System.out.println("겹치는 시간표가 있습니다.");
+							break;
+						}
+
+
+					}
+					if (chk==true) break;
+					else chk=false; //최종검증 끝. 무한루프 탈출
+				}
+
+
+
+			}
+			//모든 조건을 통과하면 무한루프가 끝나고, 밖으로 나가서 subjectlist 출력.
+			for(ThisYear x : SubjectList) x.print();
 		}
 	}
 }
