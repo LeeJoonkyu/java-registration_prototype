@@ -123,7 +123,7 @@ public class Test {
 				for(int j=0;j<TY.size();j++) {
 					if(code.equals(TY.get(j).code)) {
 						chk_code=TY.get(j).pre_code;
-						System.out.println(chk);
+
 					}
 				}
 				if(chk_code.equals("#NULL")) {
@@ -144,8 +144,8 @@ public class Test {
 						break;//과목코드 다시 입력하러 가야함.
 					}
 					else if (chk==true) {
-						System.out.println("성공");
-						chk=false;//무한루프 끝내야함.
+						//System.out.println("성공");
+						chk=false;//무한루프를 끝내고 싶다면 false. 선수과목 검증은 끝났지만 시간표 검증이 남아있음.
 						break;
 					}
 
@@ -164,22 +164,23 @@ public class Test {
 
 					for(int j=i+1;j<SubjectList.size();j++) {
 						if(t1.equals(SubjectList.get(j).time1)||t1.equals(SubjectList.get(j).time2)||t2.equals(SubjectList.get(j).time1)||t2.equals(SubjectList.get(j).time2)) {
-							chk=true;
 							System.out.println("겹치는 시간표가 있습니다.");
+							chk=true;
 							break;
 						}
 
 
 					}
 					if (chk==true) break;
-					else chk=false; //최종검증 끝. 무한루프 탈출
+					else chk=false;//chk=false 인상태에서, 겹치는 시간표가 없다면 끝 //최종검증 끝. 무한루프 탈출
 				}
 
 
 
 			}
 			//모든 조건을 통과하면 무한루프가 끝나고, 밖으로 나가서 subjectlist 출력.
-			for(ThisYear x : SubjectList) x.print();
+
 		}
+		for(ThisYear x : SubjectList) x.print();
 	}
 }
