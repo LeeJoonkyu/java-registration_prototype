@@ -98,7 +98,7 @@ public class Src_20130661 {
 		//선수과목 체크
 		//완료 후 강의시간 체크.
 		boolean chk = true;
-
+		boolean chk2 = true;
 		while(chk == true) {
 			//리턴포인트. 밑에서 검증을 한다음 chk가 true면 다시 수강신청하지 않겟지만 false그대로라면, 다시 수강신청해야함.
 			Scanner scin2 = new Scanner(System.in);
@@ -118,6 +118,7 @@ public class Src_20130661 {
 			//SubjectList에 들어간 ThisYear의 과목명을 TY클래스에서 확인해서, pre_code를 조회해야..
 			for(int i=0;i<SubjectList.size();i++) {
 				chk=true;
+				chk2=true;
 				String code = SubjectList.get(i).code;
 				String chk_code="#NULL";
 				for(int j=0;j<TY.size();j++) {
@@ -127,16 +128,16 @@ public class Src_20130661 {
 					}
 				}
 				if(chk_code.equals("#NULL")) {
-
+					chk2=false;
 					continue;//즉, 신청과목 리스트의 과목에 선수과목이 없다면, 다음 신청과목검증을한다.//SL과TY사이의 비교
 				}
 				else {//선수과목이 있다면, 이제 선수과목이 작년에 들엇는지를 검증한다.//SL과 LY사이의 비교
 					for(int j=0;j<LY.size();j++) {
 						if(chk_code.equals(LY.get(j).code)) {
 							chk=true;
-							break; //선수과목에 있네, 포문탈출.
+							break; //선수과목에 있네, 포문탈출. //있는데 들은경우
 						}
-						else chk=false; //없으면 chk는 t->f로 변경.
+						else chk=false; //없으면 chk는 t->f로 변경. //있는데 안들은경우
 					}
 					if (chk==false) { //chk가 t->f로 바뀌었다면. 선수과목을 듣지 못한것.
 						System.out.println("수강신청에 실패했습니다. 다시 신청해주세요");
@@ -148,19 +149,19 @@ public class Src_20130661 {
 						chk=false;//무한루프를 끝내고 싶다면 false. 선수과목 검증은 끝났지만 시간표 검증이 남아있음.
 						break;
 					}
-
 				}
-
-
-
-
+			}//수강신청과목중 선수과목이 모두없는경우, 있는데들은경우, 있는데 못들은경우.
+			if (chk==true && chk2==true) {////chk2가 어떤상태일때 여기를 넘어가도록. 선수과목이 모두없는경우 여기를 넘어갈수있어야함.
+				System.out.println("선수과목에걸렷어"); //모든과목에 선수과목이 없어도 여기는 걸리게됨.. chk=true가 초기값이어서.
+				continue; //선수과목 조건에 걸렸다면 시간표 체크를 수행할 필요가 없음. 리턴포인트로돌아감.
 			}
-
-			if (chk==true) continue; //선수과목 조건에 걸렸다면 시간표 체크를 수행할 필요가 없음. 리턴포인트로돌아감.
 			else {//선수과목 조건을 통과했다면 이제 시간표검증을해야함. //6*5 배열을 만들어서 마킹하는 식으로 하든지, 무식하게 String 비교로하든지.
+				for(ThisYear x : SubjectList) x.print();
 				for(int i=0;i<SubjectList.size();i++) {
 					String t1 =	SubjectList.get(i).time1;
 					String t2 = SubjectList.get(i).time2;
+
+					/*System.out.println(t1+" "+t2);*/
 
 					for(int j=i+1;j<SubjectList.size();j++) {
 						if(t1.equals(SubjectList.get(j).time1)||t1.equals(SubjectList.get(j).time2)||t2.equals(SubjectList.get(j).time1)||t2.equals(SubjectList.get(j).time2)) {
@@ -178,8 +179,8 @@ public class Src_20130661 {
 
 
 			}
+			System.out.println("왜안나가?");
 			//모든 조건을 통과하면 무한루프가 끝나고, 밖으로 나가서 subjectlist 출력.
-
 		}
 		for(ThisYear x : SubjectList) x.print();
 	}
