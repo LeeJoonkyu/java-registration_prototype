@@ -18,7 +18,6 @@ class LastYear{
 		System.out.println(code+" "+subject);
 	}
 }
-
 class ThisYear{
 	String code;
 	String subject;
@@ -110,7 +109,7 @@ public class Src_20130661 {
 						SubjectList.add(TY.get(j));
 					}
 				}
-				//이렇게 할 경우 추가로 과목을 선택하지 않을때는 x 라던가 0이라던가 널값을 입력해줘야함.
+
 			}
 
 			//TY와 SubjectList 관계 다시생각해보고, 시간표 겹치는 문제는 이 while문 밖에서 해결해야할건데, 어떻게할지생각.
@@ -122,16 +121,17 @@ public class Src_20130661 {
 				String code = SubjectList.get(i).code;
 				String chk_code="#NULL";
 				for(int j=0;j<TY.size();j++) {
-					if(code.equals(TY.get(j).code)) {
+					if(code.equals(TY.get(j).code)) {//신청과목이 올해개설과목에 있는 경우.
 						chk_code=TY.get(j).pre_code;
-
 					}
 				}
+
+
 				if(chk_code.equals("#NULL")) {
 					chk2=false;
 					continue;//즉, 신청과목 리스트의 과목에 선수과목이 없다면, 다음 신청과목검증을한다.//SL과TY사이의 비교
 				}
-				else {//선수과목이 있다면, 이제 선수과목이 작년에 들엇는지를 검증한다.//SL과 LY사이의 비교
+				else {//선수과목이 있다면, 이제 선수과목을 작년에 들엇는지를 검증한다.//SL과 LY사이의 비교
 					for(int j=0;j<LY.size();j++) {
 						if(chk_code.equals(LY.get(j).code)) {
 							chk=true;
@@ -140,7 +140,7 @@ public class Src_20130661 {
 						else chk=false; //없으면 chk는 t->f로 변경. //있는데 안들은경우
 					}
 					if (chk==false) { //chk가 t->f로 바뀌었다면. 선수과목을 듣지 못한것.
-						System.out.println("수강신청에 실패했습니다. 다시 신청해주세요");
+						System.out.println("선수과목 조건을 충족하지 못했습니다. 다시 신청해주세요");
 						chk=true;//무한루프 끝내면 안됨.
 						break;//과목코드 다시 입력하러 가야함.
 					}
@@ -150,7 +150,10 @@ public class Src_20130661 {
 						break;
 					}
 				}
-			}//수강신청과목중 선수과목이 모두없는경우, 있는데들은경우, 있는데 못들은경우.
+			}
+			//수강신청과목중 선수과목이 모두없는경우, 있는데들은경우, 있는데 못들은경우.
+			//선수과목은 위에서 거를 수 있다. 다만 선수과목이 하나도 없는경우와 선수과목 조건을 충족한 경우에는 밑으로 진행이되어야한다.
+			//새 변수가 필요한가?
 			if (chk==true && chk2==true) {////chk2가 어떤상태일때 여기를 넘어가도록. 선수과목이 모두없는경우 여기를 넘어갈수있어야함.
 				System.out.println("선수과목에걸렷어"); //모든과목에 선수과목이 없어도 여기는 걸리게됨.. chk=true가 초기값이어서.
 				continue; //선수과목 조건에 걸렸다면 시간표 체크를 수행할 필요가 없음. 리턴포인트로돌아감.
@@ -179,7 +182,7 @@ public class Src_20130661 {
 
 
 			}
-			System.out.println("왜안나가?");
+
 			//모든 조건을 통과하면 무한루프가 끝나고, 밖으로 나가서 subjectlist 출력.
 		}
 		for(ThisYear x : SubjectList) x.print();
