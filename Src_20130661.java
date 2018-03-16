@@ -92,16 +92,18 @@ public class Src_20130661 {
 		//파일읽기는 이제 종료.
 
 
-		LinkedList<ThisYear> SubjectList = new LinkedList<ThisYear>();
+
 
 		//선수과목 체크
 		//완료 후 강의시간 체크.
 		boolean chk = true;
 		boolean chk2 = true;
-		while(chk == true) {
+		boolean fin=false;
+		while(fin==false) {//중단조건을 재설정하는 것도 괜찮겟다......
 			//리턴포인트. 밑에서 검증을 한다음 chk가 true면 다시 수강신청하지 않겟지만 false그대로라면, 다시 수강신청해야함.
 			Scanner scin2 = new Scanner(System.in);
 			System.out.println("수강 과목 코드를 입력하세요 : ");
+			LinkedList<ThisYear> SubjectList = new LinkedList<ThisYear>(); //여기서 해야 돌아올때마다 쌓이지않음.
 			for (int i=0;i<8;++i) {
 				String Subject = scin2.next();
 				for(int j=0;j<TY.size();j++) {
@@ -141,25 +143,21 @@ public class Src_20130661 {
 					}
 					if (chk==false) { //chk가 t->f로 바뀌었다면. 선수과목을 듣지 못한것.
 						System.out.println("선수과목 조건을 충족하지 못했습니다. 다시 신청해주세요");
-						chk=true;//무한루프 끝내면 안됨.
+						//chk=true;//무한루프 끝내면 안됨.
 						break;//과목코드 다시 입력하러 가야함.
-					}
-					else if (chk==true) {
-						//System.out.println("성공");
-						chk=false;//무한루프를 끝내고 싶다면 false. 선수과목 검증은 끝났지만 시간표 검증이 남아있음.
-						break;
 					}
 				}
 			}
 			//수강신청과목중 선수과목이 모두없는경우, 있는데들은경우, 있는데 못들은경우.
 			//선수과목은 위에서 거를 수 있다. 다만 선수과목이 하나도 없는경우와 선수과목 조건을 충족한 경우에는 밑으로 진행이되어야한다.
 			//새 변수가 필요한가?
+			System.out.println(chk);
 			if (chk==true && chk2==true) {////chk2가 어떤상태일때 여기를 넘어가도록. 선수과목이 모두없는경우 여기를 넘어갈수있어야함.
 				System.out.println("선수과목에걸렷어"); //모든과목에 선수과목이 없어도 여기는 걸리게됨.. chk=true가 초기값이어서.
 				continue; //선수과목 조건에 걸렸다면 시간표 체크를 수행할 필요가 없음. 리턴포인트로돌아감.
 			}
 			else {//선수과목 조건을 통과했다면 이제 시간표검증을해야함. //6*5 배열을 만들어서 마킹하는 식으로 하든지, 무식하게 String 비교로하든지.
-				for(ThisYear x : SubjectList) x.print();
+				//for(ThisYear x : SubjectList) x.print();
 				for(int i=0;i<SubjectList.size();i++) {
 					String t1 =	SubjectList.get(i).time1;
 					String t2 = SubjectList.get(i).time2;
@@ -176,8 +174,10 @@ public class Src_20130661 {
 
 					}
 					if (chk==true) break;
-					else chk=false;//chk=false 인상태에서, 겹치는 시간표가 없다면 끝 //최종검증 끝. 무한루프 탈출
+
+					//else chk=false;//chk=false 인상태에서, 겹치는 시간표가 없다면 끝 //최종검증 끝. 무한루프 탈출
 				}
+			System.out.println(chk);
 
 
 
@@ -185,6 +185,6 @@ public class Src_20130661 {
 
 			//모든 조건을 통과하면 무한루프가 끝나고, 밖으로 나가서 subjectlist 출력.
 		}
-		for(ThisYear x : SubjectList) x.print();
+		//for(ThisYear x : SubjectList) x.print();
 	}
 }
