@@ -119,6 +119,7 @@ public class Src_20130661 {
 			//SubjectList에 들어간 ThisYear의 과목명을 TY클래스에서 확인해서, pre_code를 조회해야..
 			for(int i=0;i<SubjectList.size();i++) {
 				chk=false;
+				fin=false;
 				String code = SubjectList.get(i).code;
 				String chk_code="#NULL";
 
@@ -131,6 +132,7 @@ public class Src_20130661 {
 
 				if(chk_code.equals("#NULL")) {
 					chk=true;
+					fin=true;
 					continue;//즉, 신청과목 리스트의 과목에 선수과목이 없다면, 다음 신청과목검증을한다.//SL과TY사이의 비교
 				}
 				else {//선수과목이 있다면, 이제 선수과목을 작년에 들엇는지를 검증한다.//SL과 LY사이의 비교
@@ -143,7 +145,7 @@ public class Src_20130661 {
 						}
 					}
 					if (chk==true) {
-						System.out.println("선수과목 조건을 충족했습니다.");
+						//System.out.println("선수과목 조건을 충족했습니다.");
 						continue;
 					}
 				}
@@ -154,21 +156,17 @@ public class Src_20130661 {
 				System.out.println("선수과목 조건을 충족하지 못했습니다. 다시 수강신청해주세요.");
 				continue;
 			}
-			//수강신청과목중 선수과목이 모두없는경우, 있는데들은경우, 있는데 못들은경우.
-			//선수과목은 위에서 거를 수 있다. 다만 선수과목이 하나도 없는경우와 선수과목 조건을 충족한 경우에는 밑으로 진행이되어야한다.
-			//새 변수가 필요한가?
-			/*System.out.println(chk);
-			if (chk==true && chk2==true) {////chk2가 어떤상태일때 여기를 넘어가도록. 선수과목이 모두없는경우 여기를 넘어갈수있어야함.
-				System.out.println("선수과목에걸렷어"); //모든과목에 선수과목이 없어도 여기는 걸리게됨.. chk=true가 초기값이어서.
-				continue; //선수과목 조건에 걸렸다면 시간표 체크를 수행할 필요가 없음. 리턴포인트로돌아감.
-			}*/
-			else {//선수과목 조건을 통과했다면 이제 시간표검증을해야함. //6*5 배열을 만들어서 마킹하는 식으로 하든지, 무식하게 String 비교로하든지.
+			else {
+				//System.out.println(fin);
+				//for(ThisYear x : SubjectList) x.print();
+				//선수과목 조건을 통과했다면 이제 시간표검증을해야함.
+				//6*5 배열을 만들어서 마킹하는 식으로 하든지, 무식하게 String 비교로하든지.
 				//for(ThisYear x : SubjectList) x.print();
 				for(int i=0;i<SubjectList.size();i++) {
 					String t1 =	SubjectList.get(i).time1;
 					String t2 = SubjectList.get(i).time2;
 
-					/*System.out.println(t1+" "+t2);*/
+					//System.out.println(t1+" "+t2);
 
 					for(int j=i+1;j<SubjectList.size();j++) {
 						if(t1.equals(SubjectList.get(j).time1)||t1.equals(SubjectList.get(j).time2)||t2.equals(SubjectList.get(j).time1)||t2.equals(SubjectList.get(j).time2)) {
@@ -180,15 +178,13 @@ public class Src_20130661 {
 
 					}
 					if (fin==false) break;
-
-					//else chk=false;//chk=false 인상태에서, 겹치는 시간표가 없다면 끝 //최종검증 끝. 무한루프 탈출
 				}
-			//System.out.println(chk);
+
 
 
 
 			}
-
+			//System.out.println(fin);
 			//모든 조건을 통과하면 무한루프가 끝나고, 밖으로 나가서 subjectlist 출력.
 		}
 		for(ThisYear x : SubjectList) x.print();
